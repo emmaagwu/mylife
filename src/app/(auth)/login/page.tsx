@@ -35,7 +35,7 @@ export default function LoginPage() {
         return
       }
 
-      router.push("/dashboard")
+      router.push("/home")
     } catch (error) {
       setError("Something went wrong")
     } finally {
