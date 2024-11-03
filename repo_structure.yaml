@@ -1,0 +1,174 @@
+  - path: /README.md
+    type: file
+  - path: /package.json
+    type: file
+  - path: /next.config.ts
+    type: file
+  - path: /tailwind.config.ts
+    type: file
+  - path: /package-lock.json
+    type: file
+  - path: /tsconfig.json
+    type: file
+  - path: /src
+    type: directory
+    contents:
+    - path: /src/app
+      type: directory
+      contents:
+      - path: /src/app/fonts
+        type: directory
+        contents:
+        - path: /src/app/fonts/GeistMonoVF.woff
+          type: file
+        - path: /src/app/fonts/GeistVF.woff
+          type: file
+      - path: /src/app/api
+        type: directory
+        contents:
+        - path: /src/app/api/auth
+          type: directory
+          contents:
+          - path: /src/app/api/auth/[...nextauth]
+            type: directory
+            contents:
+      - path: /src/app/layout.tsx
+        type: file
+      - path: /src/app/(auth)
+        type: directory
+        contents:
+        - path: /src/app/(auth)/login
+          type: directory
+          contents:
+        - path: /src/app/(auth)/register
+          type: directory
+          contents:
+      - path: /src/app/globals.css
+        type: file
+      - path: /src/app/(dashboard)
+        type: directory
+        contents:
+        - path: /src/app/(dashboard)/dashboard
+          type: directory
+          contents:
+        - path: /src/app/(dashboard)/home
+          type: directory
+          contents:
+      - path: /src/app/page.tsx
+        type: file
+      - path: /src/app/favicon.ico
+        type: file
+    - path: /src/styles
+      type: directory
+      contents:
+    - path: /src/components
+      type: directory
+      contents:
+      - path: /src/components/dashboard
+        type: directory
+        contents:
+      - path: /src/components/shared
+        type: directory
+        contents:
+        - path: /src/components/shared/MobileMenu.tsx
+          type: file
+        - path: /src/components/shared/ThemeToggle.tsx
+          type: file
+        - path: /src/components/shared/ThemeProvider.tsx
+          type: file
+        - path: /src/components/shared/Header.tsx
+          type: file
+      - path: /src/components/landing
+        type: directory
+        contents:
+        - path: /src/components/landing/Benefits
+          type: directory
+          contents:
+        - path: /src/components/landing/Onboarding
+          type: directory
+          contents:
+        - path: /src/components/landing/Features
+          type: directory
+          contents:
+          - path: /src/components/landing/Features/FeatureCard.tsx
+            type: file
+          - path: /src/components/landing/Features/FeaturesSection.tsx
+            type: file
+        - path: /src/components/landing/Testimonials
+          type: directory
+          contents:
+        - path: /src/components/landing/Hero
+          type: directory
+          contents:
+          - path: /src/components/landing/Hero/HeroSection.tsx
+            type: file
+      - path: /src/components/auth
+        type: directory
+        contents:
+      - path: /src/components/ui
+        type: directory
+        contents:
+        - path: /src/components/ui/toast.tsx
+          type: file
+        - path: /src/components/ui/separator.tsx
+          type: file
+        - path: /src/components/ui/form.tsx
+          type: file
+        - path: /src/components/ui/input.tsx
+          type: file
+        - path: /src/components/ui/label.tsx
+          type: file
+        - path: /src/components/ui/avatar.tsx
+          type: file
+        - path: /src/components/ui/tabs.tsx
+          type: file
+        - path: /src/components/ui/dropdown-menu.tsx
+          type: file
+        - path: /src/components/ui/toggle.tsx
+          type: file
+        - path: /src/components/ui/card.tsx
+          type: file
+        - path: /src/components/ui/sheet.tsx
+          type: file
+        - path: /src/components/ui/button.tsx
+          type: file
+        - path: /src/components/ui/switch.tsx
+          type: file
+        - path: /src/components/ui/toaster.tsx
+          type: file
+      - path: /src/components/home
+        type: directory
+        contents:
+    - path: /src/lib
+      type: directory
+      contents:
+      - path: /src/lib/db
+        type: directory
+        contents:
+      - path: /src/lib/utils.ts
+        type: file
+    - path: /src/hooks
+      type: directory
+      contents:
+      - path: /src/hooks/use-toast.ts
+        type: file
+    - path: /src/types
+      type: directory
+      contents:
+  - path: /components.json
+    type: file
+  - path: /postcss.config.mjs
+    type: file
+  - path: /public
+    type: directory
+    contents:
+    - path: /public/globe.svg
+      type: file
+    - path: /public/next.svg
+      type: file
+    - path: /public/file.svg
+      type: file
+    - path: /public/window.svg
+      type: file
+    - path: /public/vercel.svg
+      type: file
