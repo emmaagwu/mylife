@@ -1,10 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import { Avatar } from "@/components/ui/avatar"
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/shared/ThemeToggle"
 import { Bell, Music2, LayoutDashboard } from "lucide-react"
+import { signOut } from "next-auth/react"
+import { useSession } from "next-auth/react"
 import Link from "next/link"
 import {
   DropdownMenu,
@@ -17,6 +19,10 @@ import {
 
 export function Header() {
   const [isPlaying, setIsPlaying] = useState(false)
+  const { data: session } = useSession()
+  const userInitials = session?.user?.name
+    ? session.user.name.split(' ').map(n => n[0]).join('')
+    : 'U'
 
   return (
     <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -68,16 +74,17 @@ export function Header() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                 <Avatar className="h-8 w-8">
-                  <span className="font-medium">JD</span>
+                  <AvatarImage src={session?.user?.image || ""} alt="Avatar" />
+                  <AvatarFallback>
+                    {userInitials}
+                  </AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Sign out</DropdownMenuItem>
+              <DropdownMenuLabel>{session?.user?.email || "email"}</DropdownMenuLabel>
+              <DropdownMenuSeparator />              
+              <DropdownMenuItem onClick={() => signOut()}>Sign out</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

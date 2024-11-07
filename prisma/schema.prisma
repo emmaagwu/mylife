@@ -8,16 +8,24 @@ generator client {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  password      String?
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id              String           @id @default(cuid())
+  name            String?
+  email           String           @unique
+  password        String?
+  emailVerified   DateTime?
+  image           String?
+  accounts        Account[]
+  sessions        Session[]
+  coreIdentity    CoreIdentity?
+  quotes          Quote[]
+  books           Book[]
+  mentors         Mentor[]
+  plans           Plan[]
+  media           Media[]
+  visionBoard     VisionBoard[]
+  preferences     UserPreferences?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
 }
 
 model Account {
@@ -53,4 +61,110 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
-} 
+}
+
+model CoreIdentity {
+  id            String   @id @default(cuid())
+  userId        String
+  statement     String?
+  values        String[]
+  mission       String?
+  purpose       String?
+  drivers       String[]
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([userId])
+}
+
+model Quote {
+  id        String   @id @default(cuid())
+  userId    String
+  text      String
+  author    String
+  isFavorite Boolean @default(false)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Book {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String
+  author      String
+  progress    Int      @default(0)
+  coverUrl    String?
+  notes       String?
+  status      String   @default("READING") // READING, COMPLETED, WISHLIST
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Mentor {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  expertise   String
+  socialMedia Json?    // Store social media links
+  notes       String?
+  imageUrl    String?
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Plan {
+  id          String   @id @default(cuid())
+  userId      String
+  type        String   // DECADE, YEAR5, YEAR1, MONTH6, MONTH1, WEEK
+  title       String
+  description String?
+  goals       Json
+  startDate   DateTime
+  endDate     DateTime
+  status      String   @default("ACTIVE") // ACTIVE, COMPLETED, ARCHIVED
+  role        String?
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Media {
+  id          String   @id @default(cuid())
+  userId      String
+  type        String   // AUDIO, VIDEO
+  title       String
+  url         String
+  description String?
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model VisionBoard {
+  id          String   @id @default(cuid())
+  userId      String
+  imageUrl    String
+  description String?
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model UserPreferences {
+  id            String   @id @default(cuid())
+  userId        String
+  theme         String   @default("light")
+  audioEnabled  Boolean  @default(false)
+  audioUrl      String?
+  notifications Json?    // Store notification preferences
+  layout        Json?    // Store layout preferences
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([userId])
+}
