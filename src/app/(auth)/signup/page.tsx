@@ -43,18 +43,18 @@ export default function SignUpPage() {
       }
 
       // Sign in the user after successful registration
-      const result = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      })
+      // const result = await signIn("credentials", {
+      //   email,
+      //   password,
+      //   redirect: false,
+      // })
 
-      if (result?.error) {
-        setError("Failed to sign in")
-        return
-      }
+      // if (result?.error) {
+      //   setError("Failed to sign in")
+      //   return
+      // }
 
-      router.push("/dashboard")
+      router.push("/login")
     } catch (error: any) {
       setError(error.message)
     } finally {
@@ -165,7 +165,7 @@ export default function SignUpPage() {
                 type="button"
                 variant="outline"
                 className="w-full"
-                onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+                onClick={() => signIn("google", { callbackUrl: "/home" })}
               >
                 <FcGoogle className="mr-2 h-5 w-5" />
                 Google
