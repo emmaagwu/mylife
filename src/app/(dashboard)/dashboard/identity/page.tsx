@@ -8,19 +8,28 @@ import { Button } from "@/components/ui/button"
 
 export default function IdentityPage() {
   const [identityData, setIdentityData] = useState({
-    identityStatement: "",
-    missionStatement: "",
-    coreValues: "",
-    lifePurpose: "",
-    lifeVision: "",
+    statement: "",
+    values: "",
+    mission: "",
+    purpose: "",
+    drivers: "",
   })
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
 
   useEffect(() => {
-    // Fetch user data from the database
     async function fetchData() {
-      const response = await fetch("/api/user/identity")
-      const data = await response.json()
-      setIdentityData(data)
+      try {
+        console.log("fetching identity data")
+        const response = await fetch("/api/user/identity", {
+          method: "GET",
+        })
+        if (!response.ok) throw new Error("Failed to fetch identity data")
+        const data = await response.json()
+        setIdentityData(data || {})
+      } catch (error: any) {
+        setError(error.message)
+      }
     }
     fetchData()
   }, [])
@@ -30,14 +39,22 @@ export default function IdentityPage() {
   }
 
   const handleSave = async () => {
-    // Save updated data to the database
-    await fetch("/api/user/identity", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(identityData),
-    })
+    setIsLoading(true)
+    setError("")
+    try {
+      const response = await fetch("/api/user/identity", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(identityData),
+      })
+      if (!response.ok) throw new Error("Failed to update identity data")
+    } catch (error: any) {
+      setError(error.message)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -60,8 +77,8 @@ export default function IdentityPage() {
             </CardHeader>
             <CardContent>
               <Input
-                value={identityData.identityStatement}
-                onChange={(e) => handleInputChange("identityStatement", e.target.value)}
+                value={identityData.statement || ""}
+                onChange={(e) => handleInputChange("statement", e.target.value)}
                 placeholder="Set your identity statement"
               />
             </CardContent>
@@ -75,8 +92,8 @@ export default function IdentityPage() {
             </CardHeader>
             <CardContent>
               <Input
-                value={identityData.coreValues}
-                onChange={(e) => handleInputChange("coreValues", e.target.value)}
+                value={identityData.values || ""}
+                onChange={(e) => handleInputChange("values", e.target.value)}
                 placeholder="Set your values (e.g., Integrity, Innovation)"
               />
             </CardContent>
@@ -87,8 +104,8 @@ export default function IdentityPage() {
             </CardHeader>
             <CardContent>
               <Input
-                value={identityData.missionStatement}
-                onChange={(e) => handleInputChange("missionStatement", e.target.value)}
+                value={identityData.mission || ""}
+                onChange={(e) => handleInputChange("mission", e.target.value)}
                 placeholder="Set your mission statement"
               />
             </CardContent>
@@ -102,8 +119,8 @@ export default function IdentityPage() {
             </CardHeader>
             <CardContent>
               <Input
-                value={identityData.lifePurpose}
-                onChange={(e) => handleInputChange("lifePurpose", e.target.value)}
+                value={identityData.purpose || ""}
+                onChange={(e) => handleInputChange("purpose", e.target.value)}
                 placeholder="Set your life purpose"
               />
             </CardContent>
@@ -114,8 +131,8 @@ export default function IdentityPage() {
             </CardHeader>
             <CardContent>
               <Input
-                value={identityData.lifeVision}
-                onChange={(e) => handleInputChange("lifeVision", e.target.value)}
+                value={identityData.drivers || ""}
+                onChange={(e) => handleInputChange("drivers", e.target.value)}
                 placeholder="Set your life vision"
               />
             </CardContent>
@@ -123,8 +140,10 @@ export default function IdentityPage() {
         </TabsContent>
       </Tabs>
 
-      <Button onClick={handleSave} className="mt-4">
-        Save Changes
+      {error && <p className="text-sm text-red-500">{error}</p>}
+
+      <Button onClick={handleSave} className="mt-4" disabled={isLoading}>
+        {isLoading ? "Saving..." : "Save Changes"}
       </Button>
     </div>
   )

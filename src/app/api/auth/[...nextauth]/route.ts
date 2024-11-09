@@ -43,7 +43,10 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Invalid credentials")
         }
 
-        return user
+        console.log("Fetched user:", user);
+
+        // return user
+        return { id: user.id, name: user.name, email: user.email };
       }
     })
   ],
@@ -55,16 +58,21 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
+      console.log("Token in jwt callback:", token);
+      console.log("User in jwt callback:", user);
       if (user) {
-        token.sub = user.id
+        console.log("User ID in jwt callback:", user);
+        token.sub = user.id;
       }
-      return token
+      return token;
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.sub!
+        console.log("Session user in session callback:", session.user);
+        session.user.id = token.sub!;
+        console.log("Session user ID in session callback:", session.user);
       }
-      return session
+      return session;
     },
   },
 }

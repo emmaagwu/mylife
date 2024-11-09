@@ -52,7 +52,7 @@ export function CoreIdentity({ data, isLoading }: CoreIdentityProps) {
         <Card className="p-4">
           <h3 className="font-semibold mb-2">Core Values</h3>
           <div className="flex flex-wrap gap-2">
-            {data.values.map((value) => (
+            {data.values?.map((value) => (
               <span
                 key={value}
                 className="bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 px-2 py-1 rounded-md text-sm"
