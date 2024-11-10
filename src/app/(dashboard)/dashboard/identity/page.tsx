@@ -9,10 +9,10 @@ import { Button } from "@/components/ui/button"
 export default function IdentityPage() {
   const [identityData, setIdentityData] = useState({
     statement: "",
-    values: "",
+    values: [] as string[],
     mission: "",
     purpose: "",
-    drivers: "",
+    drivers: [] as string[],
   })
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
@@ -35,7 +35,12 @@ export default function IdentityPage() {
   }, [])
 
   const handleInputChange = (field: string, value: string) => {
-    setIdentityData((prevData) => ({ ...prevData, [field]: value }))
+    if (field === 'values' || field === 'drivers') {
+      const arrayValue = value.split(',').map(item => item.trim())
+      setIdentityData(prevData => ({ ...prevData, [field]: arrayValue }))
+    } else {
+      setIdentityData(prevData => ({ ...prevData, [field]: value }))
+    }
   }
 
   const handleSave = async () => {
@@ -92,9 +97,9 @@ export default function IdentityPage() {
             </CardHeader>
             <CardContent>
               <Input
-                value={identityData.values || ""}
+                value={identityData.values.join(', ')}
                 onChange={(e) => handleInputChange("values", e.target.value)}
-                placeholder="Set your values (e.g., Integrity, Innovation)"
+                placeholder="Set your values (comma-separated, e.g.: Integrity, Innovation)"
               />
             </CardContent>
           </Card>
@@ -131,9 +136,9 @@ export default function IdentityPage() {
             </CardHeader>
             <CardContent>
               <Input
-                value={identityData.drivers || ""}
+                value={identityData.drivers.join(', ')}
                 onChange={(e) => handleInputChange("drivers", e.target.value)}
-                placeholder="Set your life vision"
+                placeholder="Set your life vision (comma-separated)"
               />
             </CardContent>
           </Card>

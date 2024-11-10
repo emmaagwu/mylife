@@ -43,10 +43,11 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Invalid credentials")
         }
 
-        console.log("Fetched user:", user);
-
-        // return user
-        return { id: user.id, name: user.name, email: user.email };
+        return { 
+          id: user.id, 
+          name: user.name, 
+          email: user.email 
+        }
       }
     })
   ],
@@ -57,25 +58,20 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
-    async jwt({ token, user }) {
-      console.log("Token in jwt callback:", token);
-      console.log("User in jwt callback:", user);
+    async jwt({ token, user, account }) {
       if (user) {
-        console.log("User ID in jwt callback:", user);
-        token.sub = user.id;
+        token.id = user.id
       }
-      return token;
+      return token
     },
     async session({ session, token }) {
       if (session.user) {
-        console.log("Session user in session callback:", session.user);
-        session.user.id = token.sub!;
-        console.log("Session user ID in session callback:", session.user);
+        session.user.id = token.id as string
       }
-      return session;
-    },
+      return session
+    }
   },
 }
 
 const handler = NextAuth(authOptions)
-export { handler as GET, handler as POST } 
+export { handler as GET, handler as POST }
