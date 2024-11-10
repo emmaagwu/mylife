@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AudioList } from "@/components/dashboard/media/AudioList"
-import { VisionBoard } from "@/components/dashboard/media/VisionBoard"
+// import { VisionBoard } from "@/components/dashboard/media/VisionBoard"
 import { Button } from "@/components/ui/button"
 import { Upload } from "lucide-react"
 
@@ -38,7 +38,7 @@ export default function MediaPage() {
               <CardTitle>Vision Board</CardTitle>
             </CardHeader>
             <CardContent>
-              <VisionBoard />
+              {/* <VisionBoard /> */}
             </CardContent>
           </Card>
         </TabsContent>
