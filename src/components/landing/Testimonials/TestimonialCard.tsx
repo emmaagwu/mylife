@@ -4,7 +4,7 @@ import { motion } from "framer-motion"
 import { Card } from "@/components/ui/card"
 import { Avatar } from "@/components/ui/avatar"
 import { Quote } from "lucide-react"
-
+import Image from "next/image"
 interface TestimonialCardProps {
   content: string
   author: {
@@ -42,8 +42,8 @@ export function TestimonialCard({ content, author, delay }: TestimonialCardProps
             {/* Author */}
             <div className="flex items-center gap-4">
               <Avatar className="h-12 w-12">
-                <img 
-                  src={author.image} 
+                <Image
+                  src={author.image}
                   alt={author.name}
                   className="object-cover"
                 />
