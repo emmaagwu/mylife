@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card"
 import { Avatar } from "@/components/ui/avatar"
 import { Quote } from "lucide-react"
 import Image from "next/image"
+
 interface TestimonialCardProps {
   content: string
   author: {
@@ -41,12 +42,17 @@ export function TestimonialCard({ content, author, delay }: TestimonialCardProps
 
             {/* Author */}
             <div className="flex items-center gap-4">
-              <Avatar className="h-12 w-12">
-                <Image
-                  src={author.image}
-                  alt={author.name}
-                  className="object-cover"
-                />
+              <Avatar className="h-12 w-12 relative">
+                <div className="relative w-full h-full">
+                  <Image
+                    src={author.image}
+                    alt={author.name}
+                    fill
+                    sizes="48px"
+                    className="object-cover rounded-full"
+                    priority
+                  />
+                </div>
               </Avatar>
               <div>
                 <div className="font-semibold text-gray-900 dark:text-white">
