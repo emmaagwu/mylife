@@ -33,14 +33,8 @@ const testimonials = [
 
 export function TestimonialsSection() {
   return (
-    <section id="testimonials" className="py-24 relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800" />
-        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
-      </div>
-
-      <div className="container mx-auto px-4">
+    <section className="py-24 relative overflow-hidden w-full">
+      <div className="container px-4 mx-auto">
         {/* Section Header */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}

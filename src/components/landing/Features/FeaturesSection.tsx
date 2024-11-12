@@ -73,7 +73,7 @@ const features = [
 
 export function FeaturesSection() {
   return (
-    <section id="features" className="py-20 bg-gray-50 dark:bg-gray-900">
+    <section id="features" className="py-24 relative overflow-hidden w-full">
       <div className="container px-4 mx-auto">
         {/* Section Header */}
         <motion.div 
