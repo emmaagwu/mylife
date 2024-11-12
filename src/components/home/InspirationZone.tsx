@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Quote } from "@/types/home"
 import Image from "next/image"
+
 interface InspirationZoneProps {
   quotes?: Quote[];
   visionBoard?: string[];
@@ -84,11 +85,16 @@ export function InspirationZone({ quotes = [], visionBoard = [], isLoading }: In
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {visionBoard.map((image, index) => (
           <Card key={index} className="aspect-square relative overflow-hidden">
-            <Image
-              src={image}
-              alt={`Vision board item ${index + 1}`}
-              className="object-cover w-full h-full"
-            />
+            <div className="relative w-full h-full">
+              <Image
+                src={image}
+                alt={`Vision board item ${index + 1}`}
+                fill
+                sizes="(max-width: 768px) 50vw, 33vw"
+                className="object-cover transition-transform duration-300 hover:scale-105"
+                priority={index < 6}
+              />
+            </div>
           </Card>
         ))}
       </div>
