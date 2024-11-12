@@ -63,7 +63,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body 
-        className={`${geistSans.variable} ${geistMono.variable} font-sans`}
+        className={`${geistSans.variable} ${geistMono.variable} font-sans min-h-screen overflow-x-hidden`}
         suppressHydrationWarning
       >
         <ThemeProvider

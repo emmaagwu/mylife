@@ -218,11 +218,11 @@ const steps = [
 
 export function OnboardingSection() {
   return (
-    <section className="py-24 relative">
-      {/* Background with diagonal gradient */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-gray-100 to-gray-50 dark:from-gray-900 dark:to-gray-800 transform -skew-y-6" />
-
-      <div className="container mx-auto px-4">
+    <section 
+      id="onboarding" 
+      className="py-24 relative scroll-mt-16 overflow-hidden w-full"
+    >
+      <div className="container px-4 mx-auto">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <motion.div 
@@ -242,9 +242,6 @@ export function OnboardingSection() {
 
           {/* Timeline */}
           <div className="relative">
-            {/* Vertical Line */}
-            <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-px bg-gradient-to-b from-purple-600 to-blue-600" />
-
             {/* Steps */}
             <div className="space-y-24">
               {steps.map((step, index) => (
@@ -256,12 +253,12 @@ export function OnboardingSection() {
                   transition={{ delay: index * 0.2 }}
                   className="relative"
                 >
-                  <div className={`flex items-center gap-8 ${
-                    index % 2 === 0 ? 'flex-row-reverse' : ''
+                  <div className={`flex flex-col md:flex-row items-center gap-8 ${
+                    index % 2 === 0 ? 'md:flex-row-reverse' : ''
                   }`}>
                     {/* Content */}
-                    <div className={`w-1/2 ${
-                      index % 2 === 0 ? 'text-right' : 'text-left'
+                    <div className={`w-full md:w-1/2 text-center md:text-left ${
+                      index % 2 === 0 ? 'md:text-right' : ''
                     }`}>
                       <h3 className="text-2xl font-bold mb-2">{step.title}</h3>
                       <p className="text-gray-600 dark:text-gray-300">
@@ -269,19 +266,9 @@ export function OnboardingSection() {
                       </p>
                     </div>
 
-                    {/* Circle */}
-                    <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center w-12 h-12 rounded-full bg-white dark:bg-gray-800 border-4 border-purple-600 z-10">
-                      <span className="text-xl font-bold text-purple-600">
-                        {index + 1}
-                      </span>
-                    </div>
-
-                    {/* Illustration Placeholder */}
-                    <div className="w-1/2 h-48 rounded-lg bg-gradient-to-br from-purple-100 to-blue-100 dark:from-purple-900/20 dark:to-blue-900/20 flex items-center justify-center">
-                      <span className="text-gray-400 dark:text-gray-600">
-                        {/* Illustration {index + 1} */}
-                        {step.illustration}
-                      </span>
+                    {/* Illustration */}
+                    <div className="w-full md:w-1/2 h-48 rounded-lg bg-gradient-to-br from-purple-100 to-blue-100 dark:from-purple-900/20 dark:to-blue-900/20 flex items-center justify-center">
+                      {step.illustration}
                     </div>
                   </div>
                 </motion.div>

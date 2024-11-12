@@ -1,107 +1,101 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetClose } from "@/components/ui/sheet"
 import { Menu, X, ChevronRight } from "lucide-react"
 import { motion } from "framer-motion"
 import { useState } from "react"
 import { navigation } from "./Header" // Import shared navigation config
+import { useRouter } from 'next/navigation'
+import { useSession, signOut } from 'next-auth/react'
+
+interface MobileMenuProps {
+  className?: string;
+}
 
 export function MobileMenu() {
-  const [isOpen, setIsOpen] = useState(false)
+  const router = useRouter()
+  const { data: session } = useSession()
 
-  const handleClick = (href: string) => {
-    setIsOpen(false)
-    setTimeout(() => {
+  const handleNavigation = (href: string) => {
+    if (href.startsWith('#')) {
+      // Handle smooth scroll
       const element = document.querySelector(href)
       if (element) {
-        element.scrollIntoView({ 
-          behavior: 'smooth',
-          block: 'start'
-        })
+        element.scrollIntoView({ behavior: 'smooth' })
       }
-    }, 300) // Wait for menu to close
+    } else {
+      // Handle page navigation
+      router.push(href)
+    }
   }
 
   return (
-    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+    <Sheet>
       <SheetTrigger asChild>
         <Button variant="ghost" size="icon" className="md:hidden">
-          <Menu className="h-5 w-5" />
+          <Menu className="h-6 w-6" />
           <span className="sr-only">Toggle menu</span>
         </Button>
       </SheetTrigger>
-      <SheetContent 
-        side="right" 
-        className="w-full sm:w-[400px] p-0 bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-950"
-      >
-        <motion.nav 
-          className="flex flex-col h-full"
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b">
-            <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-              MyLife
-            </span>
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={() => setIsOpen(false)}
+      <SheetContent side="right" className="w-[280px] sm:w-[350px]">
+        <SheetHeader className="mb-4">
+          <SheetTitle>Menu</SheetTitle>
+          <SheetClose className="absolute right-4 top-4">
+            <X className="h-4 w-4" />
+          </SheetClose>
+        </SheetHeader>
+        
+        <div className="flex flex-col space-y-4">
+          {navigation.map((item) => (
+            <Button
+              key={item.name}
+              variant="ghost"
+              className="w-full justify-start"
+              onClick={() => handleNavigation(item.href)}
             >
-              <X className="h-5 w-5" />
+              <item.icon className="mr-2 h-4 w-4" />
+              {item.name}
             </Button>
-          </div>
-          
-          {/* Navigation Items */}
-          <div className="flex-1 overflow-y-auto py-6 px-4">
-            <div className="space-y-4">
-              {navigation.map((item, i) => (
-                <motion.div
-                  key={item.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                >
-                  <button
-                    onClick={() => handleClick(item.href)}
-                    className="w-full group relative flex items-center gap-4 rounded-lg p-4 text-left text-sm font-medium transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
-                  >
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-purple-50 dark:bg-gray-800 group-hover:bg-purple-100 dark:group-hover:bg-gray-700">
-                      <item.icon className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-                    </span>
-                    <div className="flex-1">
-                      <div className="text-base font-semibold text-gray-900 dark:text-white">
-                        {item.name}
-                      </div>
-                      <div className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                        {item.description}
-                      </div>
-                    </div>
-                    <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-600 dark:group-hover:text-gray-500" />
-                  </button>
-                </motion.div>
-              ))}
-            </div>
-          </div>
+          ))}
+        </div>
 
-          {/* Footer Actions */}
-          <div className="border-t p-6 space-y-4 bg-gray-50/80 dark:bg-gray-900/80 backdrop-blur-sm">
-            <Button 
-              variant="ghost" 
-              className="w-full justify-center text-base"
-            >
-              Log in
-            </Button>
-            <Button 
-              className="w-full justify-center text-base bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
-            >
-              Get Started
-            </Button>
-          </div>
-        </motion.nav>
+        <div className="mt-auto border-t pt-4 absolute bottom-8 left-6 right-6">
+          {session ? (
+            <>
+              <Button 
+                variant="ghost" 
+                className="w-full justify-start mb-2"
+                onClick={() => router.push('/dashboard')}
+              >
+                Dashboard
+              </Button>
+              <Button 
+                variant="ghost" 
+                className="w-full justify-start"
+                onClick={() => signOut()}
+              >
+                Log out
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button 
+                variant="ghost" 
+                className="w-full justify-start mb-2"
+                onClick={() => router.push('/login')}
+              >
+                Log in
+              </Button>
+              <Button 
+                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white"
+                onClick={() => router.push('/signup')}
+              >
+                Get Started
+              </Button>
+            </>
+          )}
+        </div>
       </SheetContent>
     </Sheet>
   )
