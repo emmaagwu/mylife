@@ -1,19 +1,25 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetClose } from "@/components/ui/sheet"
-import { Menu, X, ChevronRight } from "lucide-react"
-import { motion } from "framer-motion"
-import { useState } from "react"
-import { navigation } from "./Header" // Import shared navigation config
-import { useRouter } from 'next/navigation'
-import { useSession, signOut } from 'next-auth/react'
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+  SheetClose,
+} from "@/components/ui/sheet"
+import { Menu, X } from "lucide-react"
+import { navigation } from "./Header"
+import { useRouter } from "next/navigation"
+import { useSession, signOut } from "next-auth/react"
+import { cn } from "@/lib/utils"
 
 interface MobileMenuProps {
   className?: string;
 }
 
-export function MobileMenu() {
+export function MobileMenu({ className }: MobileMenuProps) {
   const router = useRouter()
   const { data: session } = useSession()
 
@@ -33,7 +39,11 @@ export function MobileMenu() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="md:hidden">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className={cn("md:hidden", className)}
+        >
           <Menu className="h-6 w-6" />
           <span className="sr-only">Toggle menu</span>
         </Button>
