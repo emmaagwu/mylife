@@ -56,4 +56,24 @@ export interface Notification {
   time: string;
   read: boolean;
   type: 'achievement' | 'reminder' | 'message' | 'system';
+}
+
+export interface VisionBoardData {
+  images: string[];
+  isPlaceholder?: boolean;
+  message?: string;
+}
+
+export interface HomeData {
+  identity: any; // Define specific type if needed
+  growth: any; // Define specific type if needed
+  quotes: Array<{
+    id: string;
+    text: string;
+    author: string;
+    isFavorite: boolean;
+  }>;
+  visionBoard: VisionBoardData;
+  events: any; // Define specific type if needed
+  notifications: any; // Define specific type if needed
 } 
