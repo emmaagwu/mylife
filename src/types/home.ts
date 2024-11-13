@@ -9,8 +9,8 @@ export interface CoreIdentityData {
   statement: string;
   values: string[];
   mission: string;
+  vision: string;
   purpose: string;
-  drivers: string[];
 }
 
 export interface Quote {
@@ -25,21 +25,18 @@ export interface Book {
   title: string;
   author: string;
   progress: number;
-  coverUrl?: string;
 }
 
 export interface Achievement {
   id: string;
   title: string;
   date: string;
-  description?: string;
 }
 
 export interface Mentor {
   id: string;
   name: string;
   expertise: string;
-  imageUrl?: string;
 }
 
 export interface Event {
@@ -64,16 +61,32 @@ export interface VisionBoardData {
   message?: string;
 }
 
+export interface GrowthData {
+  books: Book[];
+  achievements: Achievement[];
+  mentors: Mentor[];
+}
+
 export interface HomeData {
-  identity: any; // Define specific type if needed
-  growth: any; // Define specific type if needed
+  identity: {
+    statement: string;
+    values: string[];
+    mission: string;
+    vision: string;
+    purpose: string;
+  };
+  growth: GrowthData;
   quotes: Array<{
     id: string;
     text: string;
     author: string;
     isFavorite: boolean;
   }>;
-  visionBoard: VisionBoardData;
-  events: any; // Define specific type if needed
-  notifications: any; // Define specific type if needed
+  visionBoard: {
+    images: string[];
+    isPlaceholder: boolean;
+    message: string;
+  };
+  events: any[]; // Define specific type if needed
+  notifications: any[]; // Define specific type if needed
 } 
