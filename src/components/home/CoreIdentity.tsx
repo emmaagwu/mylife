@@ -6,7 +6,13 @@ import { Edit2, Quote, Target, Compass, Heart, Lightbulb, GripVertical } from "l
 import { Skeleton } from "@/components/ui/skeleton"
 import { useRouter } from "next/navigation"
 import type { CoreIdentityData } from "@/types/home"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import {
   DndContext,
   closestCenter,
@@ -23,6 +29,12 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { useSession } from "next-auth/react"
+import { CircularProgress } from "@/components/ui/circular-progress"
+import { Medal, Star } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
+import { useKeyboardShortcut } from "@/hooks/useKeyboardShortcut"
+import { IdentityInsights } from "@/components/home/IdentityInsights"
 
 interface SortableCardProps {
   id: string
@@ -51,7 +63,10 @@ function SortableCard({ id, children }: SortableCardProps) {
       <div className="group relative">
         <div
           {...listeners}
-          className="absolute -left-8 top-1/2 -translate-y-1/2 p-2 opacity-0 group-hover:opacity-100 cursor-grab transition-opacity"
+          className="absolute -left-2 md:-left-8 top-1/2 -translate-y-1/2 p-2 
+            opacity-40 hover:opacity-100 md:opacity-0 md:group-hover:opacity-100 
+            cursor-grab transition-opacity bg-background/80 backdrop-blur-sm 
+            rounded-full shadow-sm border border-border/50"
         >
           <GripVertical className="h-4 w-4 text-muted-foreground" />
         </div>
@@ -61,18 +76,80 @@ function SortableCard({ id, children }: SortableCardProps) {
   )
 }
 
+function InstructionsTooltip() {
+  const [isVisible, setIsVisible] = useState(true)
+  const [hasInteracted, setHasInteracted] = useState(false)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!hasInteracted) {
+        setIsVisible(false)
+      }
+    }, 3000)
+
+    const handleInteraction = () => {
+      setHasInteracted(true)
+      setIsVisible(true)
+      setTimeout(() => setIsVisible(false), 1500)
+    }
+
+    window.addEventListener('mousemove', handleInteraction, { once: true })
+    window.addEventListener('touchstart', handleInteraction, { once: true })
+
+    return () => {
+      clearTimeout(timer)
+      window.removeEventListener('mousemove', handleInteraction)
+      window.removeEventListener('touchstart', handleInteraction)
+    }
+  }, [hasInteracted])
+
+  return (
+    <TooltipProvider>
+      <Tooltip open={isVisible}>
+        <TooltipTrigger asChild>
+          <h2 className="text-2xl font-bold tracking-tight">Core Identity</h2>
+        </TooltipTrigger>
+        <TooltipContent side="right" className="max-w-[200px]">
+          <p className="text-sm">
+            Drag cards to reorder • Click Edit to update
+          </p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  )
+}
+
 const defaultOrder = ['statement', 'values', 'mission', 'vision', 'purpose']
 
 export function CoreIdentity({ data, isLoading }: { data: CoreIdentityData; isLoading: boolean }) {
   const router = useRouter()
   const [order, setOrder] = useState(defaultOrder)
+  const { data: session } = useSession()
+  const firstName = session?.user?.name?.split(' ')[0]
   
+  // Calculate completion percentage
+  const completionScore = Object.entries(data).reduce((score, [key, value]) => {
+    if (key === 'values' && Array.isArray(value)) {
+      return score + (value.length > 0 ? 1 : 0)
+    }
+    return score + (value ? 1 : 0)
+  }, 0)
+  
+  const completionPercentage = (completionScore / 5) * 100
+
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // 8px of movement required before drag starts
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   )
+
+  // Add keyboard shortcut
+  useKeyboardShortcut('e', () => router.push('/dashboard/identity'))
 
   if (isLoading) {
     return <CoreIdentitySkeletons />
@@ -92,21 +169,37 @@ export function CoreIdentity({ data, isLoading }: { data: CoreIdentityData; isLo
 
   const cards = {
     statement: (
-      <Card className="group p-6 border-2 border-purple-500/20 bg-gradient-to-br from-purple-50 to-transparent dark:from-purple-950/20 hover:border-purple-500/40 transition-all">
-        <div className="flex items-start gap-4">
-          <div className="rounded-full p-3 bg-purple-100 dark:bg-purple-900/30 group-hover:scale-105 transition-transform">
-            <Quote className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <Card className="group p-6 border-2 border-purple-500/20 bg-gradient-to-br from-purple-50 to-transparent dark:from-purple-950/20 hover:border-purple-500/40 transition-all">
+          <div className="flex items-start gap-4">
+            <div className="rounded-full p-3 bg-purple-100 dark:bg-purple-900/30 group-hover:scale-105 transition-transform">
+              <Quote className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+            </div>
+            <div className="space-y-2 flex-1">
+              <h3 className="text-xl font-semibold group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors">
+                Identity Statement
+              </h3>
+              <p className="text-lg leading-relaxed text-muted-foreground group-hover:text-foreground transition-colors">
+                {data.statement || "Define your identity statement in the dashboard →"}
+              </p>
+            </div>
           </div>
-          <div className="space-y-2 flex-1">
-            <h3 className="text-xl font-semibold group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors">
-              Identity Statement
-            </h3>
-            <p className="text-lg leading-relaxed text-muted-foreground group-hover:text-foreground transition-colors">
-              {data.statement || "Define your identity statement in the dashboard →"}
-            </p>
-          </div>
-        </div>
-      </Card>
+
+          {data.statement && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="absolute top-2 right-2"
+            >
+              <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+            </motion.div>
+          )}
+        </Card>
+      </motion.div>
     ),
     values: (
       <Card className="group p-6 border-2 border-blue-500/20 bg-gradient-to-br from-blue-50 to-transparent dark:from-blue-950/20 hover:border-blue-500/40 transition-all">
@@ -194,17 +287,44 @@ export function CoreIdentity({ data, isLoading }: { data: CoreIdentityData; isLo
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">Core Identity</h2>
-          <p className="text-sm text-muted-foreground mt-1">
-            Drag cards to reorder • Click Edit to update
-          </p>
+        <div className="space-y-2">
+          <InstructionsTooltip />
+          {!isLoading && (
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <CircularProgress value={completionPercentage} size="sm" />
+                <p className="text-sm text-muted-foreground">
+                  Identity Profile: {completionPercentage}% Complete
+                </p>
+              </div>
+              {completionPercentage === 100 && (
+                <span className="inline-flex items-center gap-1 text-sm text-amber-500">
+                  <Medal className="h-4 w-4" />
+                  Fully Defined!
+                </span>
+              )}
+            </div>
+          )}
         </div>
-        <Button variant="outline" onClick={() => router.push('/dashboard/identity')} className="gap-2">
+        <Button 
+          variant="outline" 
+          onClick={() => router.push('/dashboard/identity')} 
+          className="gap-2"
+        >
           <Edit2 className="h-4 w-4" />
-          Edit Identity
+          <span className="hidden sm:inline">Edit Identity</span>
+          <span className="sm:hidden">Edit</span>
         </Button>
       </div>
+
+      {!isLoading && completionPercentage < 100 && (
+        <div className="bg-muted/50 rounded-lg p-4 text-sm text-muted-foreground">
+          <p>
+            Hey {firstName || 'there'}! 👋 Complete your identity profile to unlock deeper insights 
+            and track your personal growth journey more effectively.
+          </p>
+        </div>
+      )}
 
       <DndContext
         sensors={sensors}
@@ -221,6 +341,15 @@ export function CoreIdentity({ data, isLoading }: { data: CoreIdentityData; isLo
           </SortableContext>
         </div>
       </DndContext>
+
+      {/* Add insights */}
+      <IdentityInsights data={data} />
+      
+      {/* Add keyboard shortcut hint */}
+      <p className="text-xs text-muted-foreground text-center mt-4">
+        Pro tip: Press <kbd className="px-1 py-0.5 bg-muted rounded text-xs">⌘</kbd> + 
+        <kbd className="px-1 py-0.5 bg-muted rounded text-xs">E</kbd> to quickly edit your identity
+      </p>
     </div>
   )
 }
