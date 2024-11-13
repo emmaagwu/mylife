@@ -24,8 +24,8 @@ export async function GET() {
         statement: "",
         values: [],
         mission: "",
+        vision: "",
         purpose: "",
-        drivers: [],
       });
     }
     
@@ -55,8 +55,8 @@ export async function POST(request: Request) {
       statement: data.statement || "",
       values: Array.isArray(data.values) ? data.values : [],
       mission: data.mission || "",
+      vision: data.vision || "",
       purpose: data.purpose || "",
-      drivers: Array.isArray(data.drivers) ? data.drivers : [],
     };
 
     const updatedIdentity = await prisma.coreIdentity.upsert({
