@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import type { HomeData, CoreIdentityData } from '@/types/home';
+import type { HomeData, CoreIdentityData, GrowthData } from '@/types/home';
 
 const defaultIdentityData: CoreIdentityData = {
   statement: "",
@@ -9,8 +9,27 @@ const defaultIdentityData: CoreIdentityData = {
   purpose: ""
 }
 
+const defaultGrowthData: GrowthData = {
+  books: [],
+  achievements: [],
+  mentors: []
+}
+
+const defaultHomeData: HomeData = {
+  identity: defaultIdentityData,
+  growth: defaultGrowthData,
+  quotes: [],
+  visionBoard: {
+    images: [],
+    isPlaceholder: true,
+    message: ""
+  },
+  events: [],
+  notifications: []
+}
+
 export function useHomeData() {
-  const [data, setData] = useState<HomeData | null>(null);
+  const [data, setData] = useState<HomeData>(defaultHomeData);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,15 +58,11 @@ export function useHomeData() {
             vision: identityData.vision || "",
             purpose: identityData.purpose || ""
           },
-          growth: prevData?.growth || [],
-          quotes: prevData?.quotes || [],
-          visionBoard: prevData?.visionBoard || {
-            images: [],
-            isPlaceholder: true,
-            message: ""
-          },
-          events: prevData?.events || [],
-          notifications: prevData?.notifications || []
+          growth: defaultGrowthData,
+          quotes: prevData.quotes,
+          visionBoard: prevData.visionBoard,
+          events: prevData.events,
+          notifications: prevData.notifications
         }));
       } catch (err) {
         setError(err instanceof Error ? err.message : "Something went wrong");
@@ -60,16 +75,12 @@ export function useHomeData() {
   }, []);
 
   return {
-    identity: data?.identity || defaultIdentityData,
-    growth: data?.growth || [],
-    quotes: data?.quotes || [],
-    visionBoard: data?.visionBoard || {
-      images: [],
-      isPlaceholder: true,
-      message: "Loading vision board..."
-    },
-    events: data?.events || [],
-    notifications: data?.notifications || [],
+    identity: data.identity,
+    growth: data.growth,
+    quotes: data.quotes,
+    visionBoard: data.visionBoard,
+    events: data.events,
+    notifications: data.notifications,
     isLoading,
     error
   };
