@@ -7,18 +7,20 @@ import { ChevronLeft, ChevronRight, PlusCircle } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Quote } from "@/types/home"
 import Image from "next/image"
+import type { VisionBoardData } from "@/types/home"
 
 interface InspirationZoneProps {
-  quotes?: Quote[];
-  visionBoard: {
-    images: string[];
-    isPlaceholder?: boolean;
-    message?: string;
-  };
+  quotes: Array<{
+    id: string;
+    text: string;
+    author: string;
+    isFavorite: boolean;
+  }>;
+  visionBoard: VisionBoardData;
   isLoading: boolean;
 }
 
-export function InspirationZone({ quotes = [], visionBoard, isLoading }: InspirationZoneProps) {
+export function InspirationZone({ quotes, visionBoard, isLoading }: InspirationZoneProps) {
   const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0)
 
   if (isLoading) {
