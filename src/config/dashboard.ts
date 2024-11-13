@@ -11,6 +11,10 @@ import {
   Music,
   Home,
   LineChart,
+  User,
+  Book,
+  MessageSquare,
+  Fingerprint,
 } from "lucide-react"
 
 export const dashboardConfig = {
@@ -23,26 +27,28 @@ export const dashboardConfig = {
   ],
   sidebarNav: [
     {
-      title: "Overview",
+      title: "Dashboard",
       href: "/dashboard",
       icon: LayoutDashboard,
     },
     {
       title: "Core Identity",
       href: "/dashboard/identity",
-      icon: Target,
+      icon: Fingerprint,
       items: [
         {
-          title: "Values & Mission",
-          href: "/dashboard/identity/values",
-          description: "Manage your core values and mission statement",
+          title: "Identity Statement",
+          href: "/dashboard/identity?tab=identity",
         },
         {
-          title: "Purpose & Drivers",
-          href: "/dashboard/identity/purpose",
-          description: "Define your life purpose and key drivers",
+          title: "Mission & Values",
+          href: "/dashboard/identity?tab=mission-values",
         },
-      ],
+        {
+          title: "Vision & Purpose",
+          href: "/dashboard/identity?tab=vision-purpose",
+        }
+      ]
     },
     {
       title: "Planning",

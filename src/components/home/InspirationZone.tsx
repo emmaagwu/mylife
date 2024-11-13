@@ -3,18 +3,22 @@
 import { useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronLeft, ChevronRight, PlusCircle } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Quote } from "@/types/home"
 import Image from "next/image"
 
 interface InspirationZoneProps {
   quotes?: Quote[];
-  visionBoard?: string[];
+  visionBoard: {
+    images: string[];
+    isPlaceholder?: boolean;
+    message?: string;
+  };
   isLoading: boolean;
 }
 
-export function InspirationZone({ quotes = [], visionBoard = [], isLoading }: InspirationZoneProps) {
+export function InspirationZone({ quotes = [], visionBoard, isLoading }: InspirationZoneProps) {
   const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0)
 
   if (isLoading) {
@@ -45,7 +49,7 @@ export function InspirationZone({ quotes = [], visionBoard = [], isLoading }: In
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <h2 className="text-2xl font-bold">Inspiration Zone</h2>
 
       <Card className="p-6">
@@ -82,21 +86,44 @@ export function InspirationZone({ quotes = [], visionBoard = [], isLoading }: In
         </div>
       </Card>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        {visionBoard.map((image, index) => (
-          <Card key={index} className="aspect-square relative overflow-hidden">
-            <div className="relative w-full h-full">
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold">Vision Board</h3>
+          <Button variant="outline" size="sm">
+            <PlusCircle className="h-4 w-4 mr-2" />
+            Add Image
+          </Button>
+        </div>
+
+        {visionBoard.isPlaceholder && (
+          <div className="bg-muted/50 rounded-lg p-4 text-sm text-muted-foreground">
+            {visionBoard.message}
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {visionBoard.images.map((imageUrl, index) => (
+            <div 
+              key={index} 
+              className="relative aspect-[4/3] rounded-lg overflow-hidden group"
+            >
               <Image
-                src={image}
-                alt={`Vision board item ${index + 1}`}
+                src={imageUrl}
+                alt={`Vision board image ${index + 1}`}
                 fill
-                sizes="(max-width: 768px) 50vw, 33vw"
-                className="object-cover transition-transform duration-300 hover:scale-105"
-                priority={index < 6}
+                className="object-cover transition-transform group-hover:scale-105"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               />
+              {visionBoard.isPlaceholder && (
+                <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Button variant="secondary" size="sm">
+                    Replace Image
+                  </Button>
+                </div>
+              )}
             </div>
-          </Card>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   )
