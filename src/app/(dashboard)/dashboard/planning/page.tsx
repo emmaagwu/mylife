@@ -1,52 +1,25 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
+import { Metadata } from 'next'
+import { getServerSession } from 'next-auth'
+import { redirect } from 'next/navigation'
+import { authOptions } from '@/lib/authoptions'
+import PlanningDashboard from '@/components/dashboard/planning/PlanningDashboard'
+import { PlanningProvider } from '@/contexts/PlanningContext'
 
-export default function PlanningPage() {
+export const metadata: Metadata = {
+  title: 'Planning & Goals',
+  description: 'Manage your life roles, goals, and schedule',
+}
+
+export default async function PlanningPage() {
+  const session = await getServerSession(authOptions)
+
+  if (!session) {
+    redirect('/login')
+  }
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold tracking-tight">Planning</h2>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" /> New Plan
-        </Button>
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <Card>
-          <CardHeader>
-            <CardTitle>Long-Term Goals</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {/* Add long-term goals component */}
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Monthly Goals</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {/* Add monthly goals component */}
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Weekly Goals</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {/* Add weekly goals component */}
-          </CardContent>
-        </Card>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Goal Timeline</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {/* Add timeline component */}
-        </CardContent>
-      </Card>
-    </div>
+    <PlanningProvider>
+      <PlanningDashboard />
+    </PlanningProvider>
   )
 }
