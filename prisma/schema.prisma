@@ -24,9 +24,12 @@ model User {
   media           Media[]
   visionBoard     VisionBoard[]
   preferences     UserPreferences?
+  roles           Role[]
+  goals           Goal[]
+  timeBlocks      TimeBlock[]
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
-}
+} 
 
 model Account {
   id                String  @id @default(cuid())
@@ -167,4 +170,84 @@ model UserPreferences {
   updatedAt     DateTime @updatedAt
 
   @@unique([userId])
+}
+
+model Role {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String
+  description String?
+  icon        String?  // For role visualization
+  color       String?  // For UI customization
+  isArchived  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  goals       Goal[]
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Goal {
+  id          String     @id @default(cuid())
+  userId      String
+  roleId      String
+  title       String
+  description String?
+  timeline    Timeline   @default(ONE_YEAR)
+  priority    Priority   @default(IMPORTANT_NOT_URGENT)
+  deadline    DateTime?
+  status      GoalStatus @default(IN_PROGRESS)
+  progress    Int        @default(0) // 0-100 percentage
+  isArchived  Boolean    @default(false)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  timeBlocks  TimeBlock[]
+  role        Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([roleId])
+}
+
+model TimeBlock {
+  id          String   @id @default(cuid())
+  userId      String
+  goalId      String?
+  title       String
+  description String?
+  startTime   DateTime
+  endTime     DateTime
+  isCompleted Boolean  @default(false)
+  isRecurring Boolean  @default(false)
+  recurrence  String?  // JSON string for recurrence rules
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  goal        Goal?    @relation(fields: [goalId], references: [id], onDelete: SetNull)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([goalId])
+}
+
+enum Timeline {
+  TEN_YEARS
+  FIVE_YEARS
+  ONE_YEAR
+  ONE_MONTH
+  ONE_WEEK
+  TODAY
+}
+
+enum Priority {
+  IMPORTANT_URGENT
+  IMPORTANT_NOT_URGENT
+  NOT_IMPORTANT_URGENT
+  NOT_IMPORTANT_NOT_URGENT
+}
+
+enum GoalStatus {
+  IN_PROGRESS
+  COMPLETED
+  ARCHIVED
 }

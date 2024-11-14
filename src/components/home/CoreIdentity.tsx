@@ -347,7 +347,7 @@ export function CoreIdentity({ data, isLoading }: { data: CoreIdentityData; isLo
       
       {/* Add keyboard shortcut hint */}
       <p className="text-xs text-muted-foreground text-center mt-4">
-        Pro tip: Press <kbd className="px-1 py-0.5 bg-muted rounded text-xs">⌘</kbd> + 
+        Pro tip: Press <kbd className="px-1 py-0.5 bg-muted rounded text-xs">ctrl</kbd> + 
         <kbd className="px-1 py-0.5 bg-muted rounded text-xs">E</kbd> to quickly edit your identity
       </p>
     </div>
