@@ -45,6 +45,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "framer-motion": "^11.11.13",
+    "googleapis": "^144.0.0",
     "intersection-observer": "^0.12.2",
     "lucide-react": "^0.454.0",
     "mongoose": "^8.8.0",
