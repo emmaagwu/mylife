@@ -23,6 +23,7 @@ export async function PATCH(
         { status: 400 }
       );
     }
+    
 
     // Verify goal exists and belongs to user
     const goal = await prisma.goal.findFirst({
