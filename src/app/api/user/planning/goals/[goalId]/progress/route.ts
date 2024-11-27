@@ -2,16 +2,19 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@/lib/prisma';
 import { authOptions } from '@/lib/authoptions';
+import type { RouteHandlerContext } from 'next';
 
 export async function PATCH(
   request: NextRequest,
-  context: { params: { goalId: string } }
+  context: RouteHandlerContext<{ goalId: string }>
 ) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    const { goalId } = await context.params; // Destructure goalId from context.params
 
     const body = await request.json();
     const { progress } = body as { progress: number };
@@ -22,12 +25,12 @@ export async function PATCH(
         { error: 'Progress must be a number between 0 and 100' },
         { status: 400 }
       );
-    }    
+    }
 
     // Verify goal exists and belongs to user
     const goal = await prisma.goal.findFirst({
       where: {
-        id: context.params.goalId,
+        id: goalId,
         userId: session.user.id,
       },
     });
@@ -38,7 +41,7 @@ export async function PATCH(
 
     const updatedGoal = await prisma.goal.update({
       where: {
-        id: context.params.goalId,
+        id: goalId,
       },
       data: {
         progress,
@@ -64,18 +67,3 @@ export async function PATCH(
     );
   }
 }
-
-
-// import { NextRequest, NextResponse } from 'next/server';
-// import { getServerSession } from 'next-auth';
-// import { prisma } from '@/lib/prisma';
-// import { authOptions } from '@/lib/authoptions';
-
-
-// export async function PATCH(
-//   request: NextRequest,
-//   { params }: { params: { goalId: string } }
-// ) {
-//   console.log('Goal ID:', params.goalId); // Log the ID
-//   return NextResponse.json({ success: true });
-// }
