@@ -1,11 +1,15 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { prisma } from '@/lib/prisma'
 import { authOptions } from '@/lib/authoptions'
 
 export async function DELETE(
-  request: Request,
-  { params }: { params: { roleId: string } }
+  request: NextRequest,
+  {
+    params,
+  }: {
+    params: Promise<{ roleId: string }>
+  }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -14,10 +18,12 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const roleId = (await params).roleId
+
     // Verify the role belongs to the user
     const role = await prisma.role.findFirst({
       where: {
-        id: params.roleId,
+        id: roleId,
         userId: session.user.id
       }
     })
@@ -28,7 +34,7 @@ export async function DELETE(
 
     // Soft delete by marking as archived
     await prisma.role.update({
-      where: { id: params.roleId },
+      where: { id: roleId },
       data: { isArchived: true }
     })
 
@@ -42,8 +48,12 @@ export async function DELETE(
 }
 
 export async function PUT(
-  request: Request,
-  { params }: { params: { roleId: string } }
+  request: NextRequest,
+  {
+    params,
+  }: {
+    params: Promise<{ roleId: string }>
+  }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -55,10 +65,11 @@ export async function PUT(
     const json = await request.json()
     const { title, description, color } = json
 
+    const roleId = (await params).roleId
     // Verify the role belongs to the user
     const existingRole = await prisma.role.findFirst({
       where: {
-        id: params.roleId,
+        id: roleId,
         userId: session.user.id
       }
     })
@@ -68,7 +79,7 @@ export async function PUT(
     }
 
     const updatedRole = await prisma.role.update({
-      where: { id: params.roleId },
+      where: { id: roleId },
       data: {
         title,
         description,

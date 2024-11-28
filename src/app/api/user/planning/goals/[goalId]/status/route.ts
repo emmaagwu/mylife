@@ -1,13 +1,17 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { prisma } from '@/lib/prisma'
 import { authOptions } from '@/lib/authoptions'
 import { GoalStatus } from '@prisma/client'
 
+
 export async function PATCH(
-  request: Request,
-  { params }: { params: { goalId: string } }
-) {
+  request: NextRequest,
+  {
+    params,
+  }: {
+    params: Promise<{ goalId: string }>
+  }) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user?.id) {
@@ -25,10 +29,12 @@ export async function PATCH(
       )
     }
 
+    const goalId = (await params).goalId
+
     // Verify goal exists and belongs to user
     const goal = await prisma.goal.findFirst({
       where: {
-        id: params.goalId,
+        id: goalId,
         userId: session.user.id,
       },
     })
@@ -39,7 +45,7 @@ export async function PATCH(
 
     const updatedGoal = await prisma.goal.update({
       where: {
-        id: params.goalId,
+        id: goalId,
       },
       data: {
         status,

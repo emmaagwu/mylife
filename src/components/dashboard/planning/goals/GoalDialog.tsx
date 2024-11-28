@@ -26,6 +26,7 @@ import { cn } from '@/lib/utils'
 interface Role {
   id: string
   title: string
+  isArchived: boolean
   color: string | null
 }
 
