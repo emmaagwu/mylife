@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse, RouteHandlerContext } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth'
 import { prisma } from '@/lib/prisma'
 import { authOptions } from '@/lib/authoptions'
@@ -7,7 +7,11 @@ import { authOptions } from '@/lib/authoptions'
 // GET single goal
 export async function GET(
   request: NextRequest,
-  context: RouteHandlerContext<{ goalId: string }>
+  {
+    params,
+  }: {
+    params: Promise<{ goalId: string }>
+  }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -15,7 +19,7 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { goalId } = await context.params;
+    const goalId = (await params).goalId;
 
     const goal = await prisma.goal.findFirst({
       where: {
@@ -48,7 +52,11 @@ export async function GET(
 // PUT update goal
 export async function PUT(
   request: NextRequest,
-  context: RouteHandlerContext<{ goalId: string }>
+  {
+    params,
+  }: {
+    params: Promise<{ goalId: string }>
+  }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -67,7 +75,7 @@ export async function PUT(
       )
     }
 
-    const { goalId } = await context.params
+    const goalId = (await params).goalId
 
     // Verify goal exists and belongs to user
     const existingGoal = await prisma.goal.findFirst({
@@ -115,7 +123,11 @@ export async function PUT(
 // DELETE goal
 export async function DELETE(
   request: NextRequest,
-  context: RouteHandlerContext<{ goalId: string }>
+  {
+    params,
+  }: {
+    params: Promise<{ goalId: string }>
+  }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -123,7 +135,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { goalId } = context.params
+    const  goalId  = (await params).goalId
 
     // Verify goal exists and belongs to user
     const goal = await prisma.goal.findFirst({

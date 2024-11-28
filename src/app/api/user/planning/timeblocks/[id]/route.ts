@@ -1,10 +1,14 @@
-import { NextRequest, NextResponse, RouteHandlerContext} from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(
   request: NextRequest,
-  context: RouteHandlerContext<{ id: string }>
+  {
+    params,
+  }: {
+    params: Promise<{ id: string }>
+  }
 ) {
   try {
     const session = await getServerSession();
@@ -12,7 +16,7 @@ export async function GET(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { id } = await context.params;
+    const id = (await params).id;
 
     const timeBlock = await prisma.timeBlock.findUnique({
       where: {
@@ -39,7 +43,11 @@ export async function GET(
 
 export async function PATCH(
   request: NextRequest,
-  context: RouteHandlerContext<{ id: string }>
+  {
+    params,
+  }: {
+    params: Promise<{ id: string }>
+  }
 ) {
   try {
     const session = await getServerSession();
@@ -59,7 +67,7 @@ export async function PATCH(
       recurrence 
     } = json;
 
-    const { id } = await context.params;
+    const id  = (await params).id;
 
     const timeBlock = await prisma.timeBlock.update({
       where: {
@@ -88,7 +96,11 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  context: RouteHandlerContext<{ id: string }>
+  {
+    params,
+  }: {
+    params: Promise<{ id: string }>
+  }
 ) {
   try {
     const session = await getServerSession();
@@ -96,7 +108,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { id } = await context.params;
+    const id = (await params).id;
 
     await prisma.timeBlock.delete({
       where: {

@@ -1,3 +1,7 @@
+import { RecurrenceRule, TimeBlockConflict } from "@/types/planning";
+import { TimeBlock } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
+
 export function isOverlapping(
   start1: Date,
   end1: Date,
@@ -46,33 +50,32 @@ export function generateRecurringDates(
 }
 
 export async function checkConflicts(
-  prisma: any,
   userId: string,
   startTime: Date,
   endTime: Date
 ): Promise<TimeBlockConflict[]> {
-  const existingBlocks = await prisma.timeBlock.findMany({
+  const existingBlocks: TimeBlock[] = await prisma.timeBlock.findMany({
     where: {
       userId,
       OR: [
         {
           startTime: {
-            lte: endTime
+            lte: endTime,
           },
           endTime: {
-            gte: startTime
-          }
-        }
-      ]
-    }
+            gte: startTime,
+          },
+        },
+      ],
+    },
   });
 
-  return existingBlocks.map(block => ({
+  return existingBlocks.map((block: TimeBlock) => ({
     existingBlock: block,
     conflictType: 
       block.startTime >= startTime && block.endTime <= endTime ? 'contained' :
       block.startTime <= startTime && block.endTime >= endTime ? 'contained' :
       Math.abs(block.endTime.getTime() - startTime.getTime()) < 1000 * 60 * 15 ? 'adjacent' :
-      'overlap'
+      'overlap',
   }));
 }

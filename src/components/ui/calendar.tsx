@@ -58,8 +58,24 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" />,
-        IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" />,
+        Nav: ({ previousMonth, nextMonth, onPreviousClick, onNextClick }) => (
+          <div className="flex space-x-2">
+            <button
+               onClick={(e) => onPreviousClick && onPreviousClick(e)}
+              disabled={!previousMonth}
+              className="h-7 w-7 bg-transparent opacity-50 hover:opacity-100"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <button
+              onClick={(e) => onNextClick && onNextClick(e)}
+              disabled={!nextMonth}
+              className="h-7 w-7 bg-transparent opacity-50 hover:opacity-100"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+        ),
       }}
       formatters={{
         formatWeekdayName: (weekday) => {

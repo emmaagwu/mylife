@@ -17,7 +17,7 @@ export default function GoalProgressCard({ goal }: GoalProgressCardProps) {
           <div className="flex items-center space-x-2">
             <div 
               className="w-3 h-3 rounded-full" 
-              style={{ backgroundColor: goal.role.color }} 
+              style={{ backgroundColor: goal.role.color || '#ccc'}} 
             />
             <h3 className="font-medium">{goal.title}</h3>
           </div>

@@ -262,7 +262,7 @@ export default function GoalDialog({
               id="title"
               value={formData.title}
               onChange={(e) => 
-                setFormData(prev => ({ ...prev, title: e.target.value }))
+                setFormData(prev => ({ ...prev, title: e.target.value }))               
               }
               placeholder="Enter a SMART goal"
               required
@@ -341,10 +341,11 @@ export default function GoalDialog({
                 <Calendar
                   mode="single"
                   selected={formData.deadline || undefined}
-                  onSelect={(date) => 
-                    setFormData(prev => ({ ...prev, deadline: date }))
+                  onSelect={(date) =>                    
+                    // setFormData(prev => ({ ...prev, deadline: Date || null }))
+                    setFormData(prev => ({ ...prev, deadline: date || null }))
                   }
-                  initialFocus
+                  // initialFocus
                 />
               </PopoverContent>
             </Popover>

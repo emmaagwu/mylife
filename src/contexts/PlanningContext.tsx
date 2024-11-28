@@ -5,6 +5,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 interface Role {
   id: string
   title: string
+  isArchived: boolean
   description: string | null
   color: string | null
 }
@@ -13,6 +14,8 @@ interface Goal {
   id: string
   title: string
   status: string
+  progress: number
+  role: Role
   deadline: Date | null
 }
 
