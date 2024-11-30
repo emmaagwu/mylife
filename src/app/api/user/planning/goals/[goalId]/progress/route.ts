@@ -87,8 +87,7 @@ export async function PATCH(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const goalId  = (await params).goalId; // Destructure goalId from context.params
-    const { goalId } = await params; // Await the params Promise
+    const goalId = (await params).goalId; // Await the params Promise
 
     const body = await request.json();
     const { progress } = body as { progress: number };
