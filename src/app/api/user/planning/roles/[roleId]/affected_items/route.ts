@@ -18,7 +18,7 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const roleId = (await params).roleId
+    const roleId = (await params).roleId;
 
     // Fetch goals and their tasks
     const goals = await prisma.goal.findMany({

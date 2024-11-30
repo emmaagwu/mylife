@@ -56,23 +56,23 @@ export const dashboardConfig = {
       icon: Calendar,
       items: [
         {
-          title: "Goals Overview",
-          href: "/dashboard/planning/overview",
+          title: "Overview",
+          href: "/dashboard/planning?tab=overview",
           description: "View all your plans and goals",
         },
         {
           title: "Roles",
-          href: "/dashboard/planning/roles",
+          href: "/dashboard/planning?tab=roles",
           description: "Manage your roles and responsibilities",
         },
         {
           title: "Goals",
-          href: "/dashboard/planning/goals",
+          href: "/dashboard/planning?tab=goals",
           description: "Set and track your goals",
         },
         {
           title: "Calendar",
-          href: "/dashboard/planning/calendar",
+          href: "/dashboard/planning?tab=calendar",
           description: "View and manage your calendar",
         },
       ],

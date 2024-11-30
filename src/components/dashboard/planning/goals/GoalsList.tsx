@@ -39,7 +39,7 @@ interface FilterState {
   roles: string[]
 }
 
-export default function GoalsList() {
+export function GoalsList() {
   const { toast } = useToast()
   const [goals, setGoals] = useState<Goal[]>([])
   const [roles, setRoles] = useState<{ id: string; title: string }[]>([])

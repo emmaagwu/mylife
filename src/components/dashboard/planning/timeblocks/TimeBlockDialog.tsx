@@ -68,7 +68,7 @@ export default function TimeBlockDialog({
         ? `/api/user/planning/timeblocks/${timeBlock.id}`
         : '/api/user/planning/timeblocks'
       
-      const method = timeBlock ? 'PUT' : 'POST'
+      const method = timeBlock ? 'PATCH' : 'POST'
       
       const response = await fetch(url, {
         method,
