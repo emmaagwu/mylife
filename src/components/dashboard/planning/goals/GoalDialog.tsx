@@ -27,6 +27,7 @@ interface Role {
   id: string
   title: string
   color: string | null
+  isArchived: boolean
 }
 
 interface Goal {

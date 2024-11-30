@@ -1,11 +1,15 @@
-import { NextRequest, NextResponse, RouteHandlerContext} from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { prisma } from '@/lib/prisma'
 import { authOptions } from '@/lib/authoptions'
 
 export async function GET(
   request: NextRequest,
-  context: RouteHandlerContext<{ roleId: string }>
+  {
+    params,
+  }: {
+    params: Promise<{ roleId: string }>
+  }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -14,7 +18,7 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { roleId } = await context.params
+    const roleId = (await params).roleId;
 
     // Fetch goals and their tasks
     const goals = await prisma.goal.findMany({

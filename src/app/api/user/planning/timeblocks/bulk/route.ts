@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import { generateRecurringDates } from "@/lib/utils/timeblock";
+import { BulkTimeBlockOperation, TimeBlockCreateInput} from "@/types/planning";
+
 
 export async function POST(request: Request) {
   try {
@@ -13,9 +15,22 @@ export async function POST(request: Request) {
     const json: BulkTimeBlockOperation = await request.json();
     const { originalId, dates, operation, timeBlockData } = json;
 
+    if (!dates || dates.length === 0) {
+      return NextResponse.json({ error: "Dates are required" }, { status: 400 });
+    }
+
+    // Validate the `timeBlockData` structure if provided
+    if (operation === 'create' && (!timeBlockData?.title || !timeBlockData?.userId)) {
+      return NextResponse.json({ error: "Title and userId are required for creating a TimeBlock" }, { status: 400 });
+    }
+
     const user = await prisma.user.findUnique({
       where: { email: session.user.email }
     });
+
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
 
     switch (operation) {
       case 'create': {
@@ -29,14 +44,22 @@ export async function POST(request: Request) {
             const endTime = new Date(date);
             endTime.setHours(endTime.getHours() + 1); // Default 1-hour duration
 
+            if (!timeBlockData?.title) {
+              throw new Error("Title is required for time block creation");
+            }
+
+            const { title, description, isCompleted, isRecurring, recurrence } = timeBlockData || {};
+
             return prisma.timeBlock.create({
               data: {
                 ...timeBlockData,
+                title: timeBlockData.title ?? 'Untitled Block', // Provide default title
                 startTime,
                 endTime,
-                userId: user!.id
-              }
+                userId: user.id,
+              } as TimeBlockCreateInput, // Type casting ensures Prisma compliance
             });
+
           })
         );
 

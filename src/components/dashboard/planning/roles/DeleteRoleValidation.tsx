@@ -13,7 +13,7 @@ export default function DeleteRoleValidation({ inputText, targetText }: DeleteRo
     const targetLength = targetText.length
     const lengthDiff = targetLength - inputLength
 
-    let differences = []
+    const differences = []
     for (let i = 0; i < Math.max(inputLength, targetLength); i++) {
       if (inputText[i] !== targetText[i]) {
         if (i < inputLength) {

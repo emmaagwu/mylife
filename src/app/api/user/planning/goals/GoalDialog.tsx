@@ -26,6 +26,7 @@ interface Role {
   id: string
   title: string
   color: string | null
+  isArchived: boolean
 }
 
 interface Goal {
@@ -341,7 +342,7 @@ export default function GoalDialog({
                   mode="single"
                   selected={formData.deadline || undefined}
                   onSelect={(date) => 
-                    setFormData(prev => ({ ...prev, deadline: date }))
+                    setFormData(prev => ({ ...prev, deadline: date || null }))
                   }
                   initialFocus
                 />

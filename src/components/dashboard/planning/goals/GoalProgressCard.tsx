@@ -1,33 +1,47 @@
-import { Card, CardHeader, CardContent } from '@/components/ui/card'
+import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
-import { GoalWithRelations } from '@/types/planning'
+import type { GoalWithRelations } from '@/types/planning'
 import { calculateGoalProgress } from '@/lib/utils/planning'
+import { format } from 'date-fns'
 
 interface GoalProgressCardProps {
   goal: GoalWithRelations
+  showRole?: boolean
+  showDeadline?: boolean
 }
 
-export default function GoalProgressCard({ goal }: GoalProgressCardProps) {
-  const progress = calculateGoalProgress(goal)
-  
+export function GoalProgressCard({ goal, showRole = false, showDeadline = false }: GoalProgressCardProps) {
   return (
     <Card>
-      <CardHeader className="pb-2">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <div 
-              className="w-3 h-3 rounded-full" 
-              style={{ backgroundColor: goal.role.color }} 
-            />
-            <h3 className="font-medium">{goal.title}</h3>
-          </div>
-          <span className="text-sm text-muted-foreground">{progress}%</span>
-        </div>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-sm font-medium">{goal.title}</CardTitle>
       </CardHeader>
       <CardContent>
-        <Progress value={progress} className="h-2" />
-        <div className="mt-2 text-sm text-muted-foreground">
-          {goal.timeBlocks.filter(b => b.isCompleted).length} of {goal.timeBlocks.length} tasks completed
+        <div className="space-y-2">
+          <div className="flex items-center space-x-4">
+            <Progress value={goal.progress} className="flex-1" />
+            <div className="text-sm font-medium">{goal.progress}%</div>
+          </div>
+
+          {showDeadline && goal.deadline && (
+            <div className="text-sm text-muted-foreground">
+              Due {format(new Date(goal.deadline), 'MMM d, yyyy')}
+            </div>
+          )}
+
+          {showRole && goal.role && (
+            <div className="flex items-center gap-2">
+              {goal.role.color && (
+                <div
+                  className="w-2 h-2 rounded-full"
+                  style={{ backgroundColor: goal.role.color }}
+                />
+              )}
+              <span className="text-sm text-muted-foreground">
+                {goal.role.title}
+              </span>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

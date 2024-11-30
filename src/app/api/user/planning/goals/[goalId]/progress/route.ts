@@ -2,11 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@/lib/prisma';
 import { authOptions } from '@/lib/authoptions';
-import type { RouteHandlerContext } from 'next';
 
 export async function PATCH(
   request: NextRequest,
-  context: RouteHandlerContext<{ goalId: string }>
+  {
+    params,
+  }: {
+    params: Promise<{ goalId: string }>
+  }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -14,7 +17,7 @@ export async function PATCH(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { goalId } = await context.params; // Destructure goalId from context.params
+    const { goalId } = await params; // Await the params Promise
 
     const body = await request.json();
     const { progress } = body as { progress: number };

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse, RouteHandlerContext } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { prisma } from '@/lib/prisma'
 import { authOptions } from '@/lib/authoptions'
@@ -7,7 +7,11 @@ import { GoalStatus } from '@prisma/client'
 
 export async function PATCH(
   request: NextRequest,
-  context: RouteHandlerContext<{ goalId: string }>
+  {
+    params,
+  }: {
+    params: Promise<{ goalId: string }>
+  }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -26,7 +30,7 @@ export async function PATCH(
       )
     }
 
-    const { goalId } = await context.params
+    const goalId = (await params).goalId;
 
     // Verify goal exists and belongs to user
     const goal = await prisma.goal.findFirst({
