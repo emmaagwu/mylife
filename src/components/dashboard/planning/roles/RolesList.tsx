@@ -7,7 +7,7 @@ import RoleCard from './RoleCard'
 import AddRoleDialog from './AddRoleDialog'
 import { usePlanning } from '@/contexts/PlanningContext'
 
-export default function RolesList() {
+export function RolesList() {
   const { roles, fetchRoles } = usePlanning()
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
 

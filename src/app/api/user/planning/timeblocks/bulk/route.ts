@@ -47,7 +47,7 @@ export async function POST(request: Request) {
             if (!timeBlockData?.title) {
               throw new Error("Title is required for time block creation");
             }
-            
+
             const { title, description, isCompleted, isRecurring, recurrence } = timeBlockData || {};
 
             return prisma.timeBlock.create({

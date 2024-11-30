@@ -1,45 +1,32 @@
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
+"use client"
 
-const planningNavItems = [
-  {
-    title: "Overview",
-    href: "/dashboard/planning",
-  },
-  {
-    title: "Roles",
-    href: "/dashboard/planning/roles",
-  },
-  {
-    title: "Goals",
-    href: "/dashboard/planning/goals",
-  },
-  {
-    title: "Calendar",
-    href: "/dashboard/planning/calendar",
-  },
-]
+import { usePathname, useSearchParams, useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import { planningConfig } from '@/config/planning'
 
 export function PlanningNav() {
-  const pathname = usePathname()
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const currentTab = searchParams.get('tab') || 'overview'
 
   return (
     <nav className="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
-      {planningNavItems.map((item) => (
-        <Link
-          key={item.href}
-          href={item.href}
-        >
+      {planningConfig.tabs.map((item) => {
+        const Icon = item.icon
+        const isActive = currentTab === item.tab
+
+        return (
           <Button
-            variant={pathname === item.href ? "secondary" : "ghost"}
-            className="w-full justify-start"
+            key={item.tab}
+            variant={isActive ? "secondary" : "ghost"}
+            className="w-full justify-start gap-2"
+            onClick={() => router.push(`/dashboard/planning?tab=${item.tab}`)}
           >
-            {item.title}
+            <Icon className="h-4 w-4" />
+            <span>{item.title}</span>
           </Button>
-        </Link>
-      ))}
+        )
+      })}
     </nav>
   )
 }

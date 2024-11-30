@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -18,18 +18,14 @@ interface TimeBlock {
   isCompleted: boolean
 }
 
-export default function TimeBlockCalendar() {
+export function TimeBlockCalendar() {
   const [events, setEvents] = useState<TimeBlock[]>([])
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [selectedTimeBlock, setSelectedTimeBlock] = useState<TimeBlock | null>(null)
   const [selectedDates, setSelectedDates] = useState<{start: Date, end: Date} | null>(null)
   const { toast } = useToast()
 
-  useEffect(() => {
-    fetchTimeBlocks()
-  }, [])
-
-  const fetchTimeBlocks = async () => {
+  const fetchTimeBlocks = useCallback(async () => {
     try {
       const response = await fetch('/api/user/planning/timeblocks')
       const data = await response.json()
@@ -41,7 +37,11 @@ export default function TimeBlockCalendar() {
         variant: "destructive",
       })
     }
-  }
+  }, [toast])
+
+  useEffect(() => {
+    fetchTimeBlocks()
+  }, [fetchTimeBlocks])
 
   const handleEventClick = (info: any) => {
     setSelectedTimeBlock({
@@ -68,21 +68,22 @@ export default function TimeBlockCalendar() {
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="timeGridWeek"
+        selectable={true}
+        selectMirror={true}
+        dayMaxEvents={true}
+        events={events}
+        eventClick={handleEventClick}
+        select={handleDateSelect}
         headerToolbar={{
           left: 'prev,next today',
           center: 'title',
           right: 'dayGridMonth,timeGridWeek,timeGridDay'
         }}
-        editable={true}
-        selectable={true}
-        selectMirror={true}
-        dayMaxEvents={true}
-        weekends={true}
-        events={events}
-        eventClick={handleEventClick}
-        select={handleDateSelect}
+        eventDisplay="block"
+        longPressDelay={1}
+        eventLongPressDelay={1}
+        selectLongPressDelay={1}
         height="auto"
-        aspectRatio={1.8}
       />
 
       <TimeBlockDialog

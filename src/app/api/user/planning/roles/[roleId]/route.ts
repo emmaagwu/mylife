@@ -18,7 +18,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const roleId = (await params).roleId
+    const roleId = (await params).roleId;
 
     // Verify the role belongs to the user
     const role = await prisma.role.findFirst({
@@ -65,7 +65,7 @@ export async function PUT(
     const json = await request.json()
     const { title, description, color } = json
 
-    const roleId = (await params).roleId
+    const roleId = (await params).roleId;
     // Verify the role belongs to the user
     const existingRole = await prisma.role.findFirst({
       where: {

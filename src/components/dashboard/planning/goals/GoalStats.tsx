@@ -43,7 +43,7 @@ const priorityColors: Record<Priority, string> = {
   NOT_IMPORTANT_NOT_URGENT: '#6b7280',
 }
 
-export default function GoalStats() {
+export function GoalStats() {
   const [stats, setStats] = useState<GoalStats | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 

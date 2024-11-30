@@ -67,7 +67,7 @@ export async function PATCH(
       recurrence 
     } = json;
 
-    const id  = (await params).id;
+    const id = (await params).id;
 
     const timeBlock = await prisma.timeBlock.update({
       where: {

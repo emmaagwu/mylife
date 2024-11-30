@@ -11,7 +11,8 @@ export async function PATCH(
     params,
   }: {
     params: Promise<{ goalId: string }>
-  }) {
+  }
+) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user?.id) {
@@ -29,7 +30,7 @@ export async function PATCH(
       )
     }
 
-    const goalId = (await params).goalId
+    const goalId = (await params).goalId;
 
     // Verify goal exists and belongs to user
     const goal = await prisma.goal.findFirst({

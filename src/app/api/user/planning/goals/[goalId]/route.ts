@@ -75,7 +75,7 @@ export async function PUT(
       )
     }
 
-    const goalId = (await params).goalId
+    const goalId = (await params).goalId;
 
     // Verify goal exists and belongs to user
     const existingGoal = await prisma.goal.findFirst({
@@ -135,7 +135,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const  goalId  = (await params).goalId
+    const goalId = (await params).goalId;
 
     // Verify goal exists and belongs to user
     const goal = await prisma.goal.findFirst({

@@ -79,7 +79,7 @@ export async function PATCH(
     params,
   }: {
     params: Promise<{ goalId: string }>
-  } // Explicitly type the params object
+  }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -88,6 +88,7 @@ export async function PATCH(
     }
 
     const goalId  = (await params).goalId; // Destructure goalId from context.params
+    const { goalId } = await params; // Await the params Promise
 
     const body = await request.json();
     const { progress } = body as { progress: number };

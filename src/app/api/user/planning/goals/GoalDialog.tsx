@@ -341,8 +341,7 @@ export default function GoalDialog({
                 <Calendar
                   mode="single"
                   selected={formData.deadline || undefined}
-                  onSelect={(date) =>                    
-                    // setFormData(prev => ({ ...prev, deadline: Date || null }))
+                  onSelect={(date) => 
                     setFormData(prev => ({ ...prev, deadline: date || null }))
                   }
                   // initialFocus

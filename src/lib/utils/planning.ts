@@ -1,5 +1,5 @@
 import { addDays, addWeeks, addMonths, isSameDay } from 'date-fns'
-import { TimeBlock, Goal, Role } from '@prisma/client'
+import type { Goal, GoalWithRelations, Role, TimeBlock } from '@/types/planning'
 
 export type RecurrencePattern = 'DAILY' | 'WEEKLY' | 'MONTHLY'
 
@@ -45,14 +45,22 @@ export function checkTimeBlockConflicts(
   })
 }
 
-export function calculateGoalProgress(
-  goal: Goal & { timeBlocks: TimeBlock[] }
-): number {
+export function calculateGoalProgress(goal: GoalWithRelations): number {
+  if (!goal.timeBlocks || goal.timeBlocks.length === 0) return 0
+
   const completedBlocks = goal.timeBlocks.filter(block => block.isCompleted).length
   const totalBlocks = goal.timeBlocks.length
   
-  if (totalBlocks === 0) return 0
   return Math.round((completedBlocks / totalBlocks) * 100)
+}
+
+export function getGoalStatus(goal: GoalWithRelations): string {
+  if (goal.status === 'COMPLETED') return 'Completed'
+  if (goal.status === 'ARCHIVED') return 'Archived'
+
+  const progress = calculateGoalProgress(goal)
+  if (progress > 0) return 'In Progress'
+  return 'Not Started'
 }
 
 export function groupTimeBlocksByGoal(
